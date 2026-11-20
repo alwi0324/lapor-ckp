@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pelaporan SKP, IKI, CKP Triwulanan Tahun 2026</title>
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Bootstrap Icons CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between antialiased selection:bg-blue-100 selection:text-blue-900"
+  >
+    <!-- Top Accent Banner -->
+    <div
+      class="h-2 bg-gradient-to-r from-blue-700 via-sky-500 to-emerald-500 w-full"
+    ></div>
+
+    <main
+      class="w-full max-w-md sm:max-w-xl mx-auto px-4 py-8 sm:py-14 flex-grow flex flex-col justify-center"
+    >
+      <!-- Header Card -->
+      <div
+        class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 mb-5 relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-50 rounded-full opacity-60 pointer-events-none"
+        ></div>
+
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-3"
+        >
+          <i class="bi bi-building-check"></i>
+          <span>Monitoring Kinerja • 2026</span>
+        </div>
+
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+          Pelaporan SKP, IKI, CKP Triwulanan Tahun 2026
+        </h1>
+        <p class="text-sm text-slate-500 mt-2 leading-relaxed">
+          Silakan pilih nama pegawai, jenis dokumen yang akan dilaporkan, tahun
+          pelaporan, lalu unggah file dokumen dalam format PDF.
+        </p>
+      </div>
+
+      <div class="flex items-center justify-between mb-4 px-1">
+        <span
+          class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+          >Formulir Unggah</span
+        >
+        <a
+          href="dashboard/"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold text-xs rounded-xl shadow-xs transition-all"
+        >
+          <i class="bi bi-bar-chart-fill text-blue-600"></i>
+          <span>Lihat Dashboard</span>
+        </a>
+      </div>
+
+      <!-- Form Card -->
+      <form
+        id="reportForm"
+        class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 space-y-5"
+        novalidate
+      >
+        <!-- 1. Custom Searchable Dropdown: Nama Pegawai -->
+        <div class="relative" id="namaDropdownContainer">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-sm font-semibold text-slate-700">
+              Nama Pegawai <span class="text-rose-500">*</span>
+            </label>
+            <span
+              id="loadingNamaBadge"
+              class="inline-flex items-center gap-1.5 text-xs text-blue-600 font-medium"
+            >
+              <span class="loader-spinner-sm"></span> Memuat data...
+            </span>
+          </div>
+
+          <input type="hidden" id="selectedNamaInput" name="nama" required />
+
+          <!-- Trigger Button -->
+          <button
+            type="button"
+            id="namaTrigger"
+            disabled
+            class="w-full flex items-center justify-between bg-slate-100 border border-slate-300 text-left rounded-xl px-4 py-3 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <span
+              id="namaTriggerText"
+              class="text-slate-400 truncate pr-2"
+            ></span>
+            <i
+              class="bi bi-chevron-down text-slate-500 transition-transform duration-200"
+              id="namaChevron"
+            ></i>
+          </button>
+
+          <!-- Dropdown Menu & Search -->
+          <div
+            id="namaMenu"
+            class="hidden absolute z-30 mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden animate-fadeIn"
+          >
+            <div
+              class="p-2.5 border-b border-slate-100 bg-slate-50/70 sticky top-0"
+            >
+              <div class="relative">
+                <i
+                  class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"
+                ></i>
+                <input
+                  type="text"
+                  id="namaSearchInput"
+                  placeholder="Ketik nama pegawai..."
+                  autocomplete="off"
+                  class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                />
+                <button
+                  type="button"
+                  id="clearSearchBtn"
+                  class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  <i class="bi bi-x-circle-fill text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <ul
+              id="namaList"
+              class="max-h-60 overflow-y-auto divide-y divide-slate-50 text-sm custom-scrollbar"
+            >
+              <!-- List nama di-render otomatis dari Spreadsheet -->
+            </ul>
+
+            <div
+              id="namaEmptyState"
+              class="hidden py-6 px-4 text-center text-sm text-slate-400"
+            >
+              <i class="bi bi-person-x text-2xl block mb-1 text-slate-300"></i>
+              Nama tidak ditemukan
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Dropdown Jenis Dokumen -->
+        <div>
+          <label
+            for="jenisDokumenSelect"
+            class="block text-sm font-semibold text-slate-700 mb-1.5"
+          >
+            Jenis Dokumen <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="jenisDokumenSelect"
+              name="jenisDokumenSelect"
+              required
+              class="appearance-none w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-300 rounded-xl px-4 py-3 pr-10 text-sm text-slate-800 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 cursor-pointer"
+            >
+              <option value="" disabled selected>
+                -- Pilih Jenis Dokumen --
+              </option>
+              <option value="SKP Penetapan">SKP Penetapan</option>
+              <option value="IKI">IKI</option>
+              <option value="SKP Triwulan I">SKP Triwulan I</option>
+              <option value="SKP Triwulan II">SKP Triwulan II</option>
+              <option value="SKP Triwulan III">SKP Triwulan III</option>
+              <option value="SKP Triwulan IV">SKP Triwulan IV</option>
+              <option value="SKP Penilaian">SKP Penilaian</option>
+            </select>
+            <i
+              class="bi bi-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            ></i>
+          </div>
+        </div>
+
+        <div>
+          <label
+            for="tahunDropdown"
+            class="block text-sm font-semibold text-slate-700 mb-1.5"
+          >
+            Tahun Pelaporan <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <select
+              id="tahunDropdown"
+              name="tahun"
+              required
+              class="appearance-none w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-300 rounded-xl px-4 py-3 pr-10 text-sm text-slate-800 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 cursor-pointer"
+            >
+              <option value="" disabled selected>-- Pilih Tahun --</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+            </select>
+            <i
+              class="bi bi-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            ></i>
+          </div>
+        </div>
+
+        <!-- 3. Upload File Input (Khusus PDF) -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Unggah File Dokumen (PDF) <span class="text-rose-500">*</span>
+          </label>
+
+          <label
+            for="fileInput"
+            id="dropZone"
+            class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50/60 hover:bg-blue-50/40 rounded-xl p-5 cursor-pointer transition-all group"
+          >
+            <!-- Default Upload Prompt -->
+            <div
+              id="uploadPlaceholder"
+              class="flex flex-col items-center text-center"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform"
+              >
+                <i class="bi bi-file-earmark-pdf text-2xl"></i>
+              </div>
+              <p class="text-sm font-medium text-slate-700">
+                Klik untuk memilih file PDF
+              </p>
+              <p class="text-xs text-slate-400 mt-1">
+                Hanya mendukung format
+                <span class="font-semibold text-slate-600">.PDF</span> (Maks. 10
+                MB)
+              </p>
+            </div>
+
+            <!-- Selected File Preview -->
+            <div
+              id="filePreview"
+              class="hidden w-full flex items-center justify-between bg-white border border-blue-200 rounded-lg p-3 shadow-xs"
+            >
+              <div class="flex items-center gap-3 overflow-hidden">
+                <div
+                  class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0"
+                >
+                  <i class="bi bi-file-earmark-pdf-fill text-xl"></i>
+                </div>
+                <div class="truncate">
+                  <p
+                    id="fileNameEl"
+                    class="text-sm font-semibold text-slate-800 truncate"
+                  >
+                    dokumen.pdf
+                  </p>
+                  <p id="fileSizeEl" class="text-xs text-slate-500">0 KB</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                id="removeFileBtn"
+                title="Hapus file"
+                class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0"
+              >
+                <i class="bi bi-trash3 text-base"></i>
+              </button>
+            </div>
+
+            <input
+              id="fileInput"
+              name="file"
+              type="file"
+              class="hidden"
+              accept="application/pdf,.pdf"
+              required
+            />
+          </label>
+        </div>
+
+        <!-- 4. Submit Button dengan Loading State -->
+        <div class="pt-2">
+          <button
+            type="submit"
+            id="submitBtn"
+            class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.99] disabled:bg-blue-400 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-5 rounded-xl shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+          >
+            <i id="submitIcon" class="bi bi-send-fill text-sm"></i>
+            <span id="submitSpinner" class="hidden loader-spinner-white"></span>
+            <span id="submitText">Kirim Laporan</span>
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-2 px-4 text-xs text-slate-400">
+      &copy; 2026 BPS Kabupaten Dompu
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+  </body>
+</html>
